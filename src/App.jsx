@@ -25,11 +25,11 @@ function App() {
   const [player1, setPlayer1] = useState([]);
   const [player2, setPlayer2] = useState([]);
   const [winner, setWinner] = useState("");
-  let [count, setCount] = useState(0);
+  const [count, setCount] = useState(0);
 
 
   const handleOperation = (boxId, cPlayer) => {
-    setCount(count+1);
+    setCount(precount => precount + 1);
     console.log(count,"county");
     console.log(boxId, cPlayer, "from comp");
     const arrBoxes = [...boxes];
@@ -47,6 +47,11 @@ function App() {
     setBoxes(arrBoxes);
     // setCurrPlayer(currPlayer==='X'?'O':'X')
   };
+  useEffect(() =>{
+    if(count === 8)
+      setWinner("Draw!!!!Try again");
+      console.log("countedddd")
+  },[count]);
   useEffect(() => {
     console.log("from useeffect 1");
     console.log(player1, player2, "playerssss");
@@ -64,12 +69,11 @@ function App() {
       setWinner("Player2 wins!!");
 
     });
-    if(count===8)
-    setWinner("Match draw!!!")
+    
   }, [player1, player2]);
-  useEffect(() => {
-    console.log("from useeffect 2");
-  }, []);
+  // useEffect(() => {
+  //   console.log("from useeffect 2");
+  // }, []);
 
   const printBox = () => {
     return (
