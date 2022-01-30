@@ -3,12 +3,14 @@ import "./Components/BoxStyle.css";
 
 import { BoxComponent } from "./Components/BoxComponent";
 import { useState, useEffect } from "react";
+import { Button } from 'react-bootstrap';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8].map((value) => ({
     id: value,
     value: "",
-    btnColor:"blueviolet"
+    btnColor: "blueviolet",
   }));
   const [boxes, setBoxes] = useState(arr);
   const [currPlayer, setCurrPlayer] = useState("X");
@@ -26,20 +28,44 @@ function App() {
   const [player2, setPlayer2] = useState([]);
   const [winner, setWinner] = useState("");
   const [count, setCount] = useState(0);
+  const [withComp, setWithComp ] = useState(false);
+  const [compId, setCompId] = useState(99);
+  const [randArray, setRandArray] = useState([]);
 
+
+
+  // const getCompData = () =>{
+  //  const getRand = getRandomIntInclusive(0, 8);
+  //   console.log(getRand);
+  //   await setCompId(parseInt(getRand));
+  //   console.log(compId);
+  //   handleOperation(compId, currPlayer);
+  // }
 
   const handleOperation = (boxId, cPlayer) => {
-    setCount(precount => precount + 1);
-    console.log(count,"county");
+    // console.log(withComp,"with compp");
+    setCount((precount) => precount + 1);
+    console.log(count, "county");
     console.log(boxId, cPlayer, "from comp");
     const arrBoxes = [...boxes];
     arrBoxes[boxId].value = currPlayer;
-    
+
     if (currPlayer === "X") {
       arrBoxes[boxId].btnColor = "crimson";
       setPlayer1([...player1, boxId]);
       setCurrPlayer("O");
+        //with comp
+        if(withComp){
+          setRandArray([...randArray], boxId);
+
+          console.log("inside X");
+          const getRand = getRandomIntInclusive(0, 8);
+          setCompId(getRand);
+        }
+     
     } else {
+     
+      console.log("test");
       arrBoxes[boxId].btnColor = "yellowgreen";
       setPlayer2([...player2, boxId]);
       setCurrPlayer("X");
@@ -48,28 +74,31 @@ function App() {
     // setCurrPlayer(currPlayer==='X'?'O':'X')
   };
   useEffect(() =>{
-    if(count === 8)
-      setWinner("Draw!!!!Try again");
-      console.log("countedddd")
-  },[count]);
+    if(compId !==99){
+      console.log(compId, currPlayer ,"compID, hhiiii playe");
+      handleOperation(compId, currPlayer);
+    }
+   
+
+  }, [compId]);
+
+  useEffect(() => {
+    if (count === 9) setWinner("Draw!!!!Try again");
+    console.log("countedddd");
+  }, [count]);
   useEffect(() => {
     console.log("from useeffect 1");
     console.log(player1, player2, "playerssss");
     winningComb.map((element) => {
       const checkPlayer1 = element.every((i) => player1.includes(i));
       // console.log(checkPlayer1,"checkPlayer1");
-      if (checkPlayer1) 
-      setWinner("Player1 wins!!");
-      
+      if (checkPlayer1) setWinner("Player1 wins!!");
     });
     winningComb.map((element) => {
       const checkPlayer2 = element.every((i) => player2.includes(i));
       // console.log(checkPlayer2,"checkPlayer2");
-      if (checkPlayer2) 
-      setWinner("Player2 wins!!");
-
+      if (checkPlayer2) setWinner("Player2 wins!!");
     });
-    
   }, [player1, player2]);
   // useEffect(() => {
   //   console.log("from useeffect 2");
@@ -77,10 +106,10 @@ function App() {
 
   const printBox = () => {
     return (
-      <div className="container">
+      <div className="container" >
         {boxes.map((element, index) => {
           return (
-            <BoxComponent
+            <BoxComponent 
               key={index}
               btnColor={element.btnColor}
               isDisabled={element.value !== ""}
@@ -89,6 +118,7 @@ function App() {
               onHandleClick={(boxId, cPlayer) =>
                 handleOperation(boxId, cPlayer)
               }
+              // btnKey={withComp?getRandomIntInclusive(0, 8):(element.id)}
               btnKey={element.id}
             />
           );
@@ -96,16 +126,41 @@ function App() {
       </div>
     );
   };
+  function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    const result = parseInt(Math.floor(Math.random() * (max - min + 1) + min)); 
+    if(randArray.includes(result) === true){
+    console.log(result, "result");
+     getRandomIntInclusive(0, 8);
+    }
+    else{
+      setRandArray([...randArray], result);
+      return result;
+    }    
+    //The maximum is inclusive and the minimum is inclusive
+  }
 
   return (
     <div className="App">
       <h1>TIC-TAC-TOE</h1>
-      {winner?<div>{winner}</div>:<div
-        className="super-container"
-        style={{ display: "flex", justifyContent: "center" }}
-      >
-        {printBox()}
-      </div>}
+      <input type="radio" value="player" name="player" /> Play with Player
+      <input type="radio" value="computer" name="computer" onChange={() => setWithComp(true)}/> Play with computer<br /><br />
+      <Button variant="info" onClick={() => window.location.reload(false)}> Click to reload!</Button><br />
+      <br />
+
+      {winner ? (
+        <div>{winner}</div>
+      ) : (
+        <div
+          className="super-container"
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          {printBox()}
+          {/* {console.log(getRandomIntInclusive(0, 8),"RANDOM")} */}
+          
+        </div>
+      )}
     </div>
   );
 }
