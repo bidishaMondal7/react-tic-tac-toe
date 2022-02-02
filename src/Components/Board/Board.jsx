@@ -3,6 +3,10 @@ import BoxComponent from "../BoxComponent/BoxComponent";
 import "./Board.css";
 
 const Board = (props) => {
+  const refreshBoard = props.refreshPage;
+  // let handlePRev =()=>{};
+  // onchange={handlePRev};
+  console.log(refreshBoard,"refreshBoard");
   const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8].map((value) => ({
     id: value,
     value: "",
@@ -35,6 +39,31 @@ const Board = (props) => {
   //   handleOperation(compId, currPlayer);
   // }
 
+  useEffect(()=>{
+    if(refreshBoard===true){
+    setBoxes(arr)
+    setCurrPlayer("X");
+    setPlayer1([]);
+     setPlayer2([]);
+     setWinner("");
+      setCount(0);
+     setCompId(99);
+     setRandArray([]);
+    //  props.resetPrev(false);
+     
+    // handlePRev = () => {
+    //   props.onResetToPrev(true);
+    // }
+    
+    
+    }
+    else{
+      // handlePRev = () => {
+      //   props.onResetToPrev(false);
+      // }
+    }
+  },[refreshBoard]);
+ 
   const handleOperation = (boxId, cPlayer) => {
     // console.log(withComp,"with compp");
     setCount((precount) => precount + 1);
@@ -90,6 +119,8 @@ const Board = (props) => {
       if (checkPlayer2) setWinner("Player2 wins!!");
     });
   }, [player1, player2]);
+
+
 
   const printBox = () => {
     return (
