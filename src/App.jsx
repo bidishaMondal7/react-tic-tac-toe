@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 function App() {
+  
   const [withComp, setWithComp] = useState(false);
 
   return (
@@ -14,7 +15,6 @@ function App() {
         <p>Multiplayer</p>
         <Form.Check
           type="switch"
-          id="custom-switch"
           onChange={() => setWithComp(!withComp)}
         />
         <p>With computer</p>
